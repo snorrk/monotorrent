@@ -386,5 +386,16 @@ namespace MonoTorrent.Common {
                                                  maps [i].Source,
                                                  maps [i].Destination));
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (asyncResult != null)
+            {
+                asyncResult.Dispose();
+                asyncResult = null;
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

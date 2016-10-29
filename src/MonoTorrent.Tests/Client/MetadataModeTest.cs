@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class MetadataModeTests
+    public sealed class MetadataModeTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -159,6 +159,24 @@ namespace MonoTorrent.Client
         private PeerMessage ReceiveMessage(CustomConnection connection)
         {
             return TransferTest.ReceiveMessage(connection, decryptor, rig.Manager);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (pair != null)
+                {
+                    this.pair.Dispose();
+                    this.pair = null;
+                }
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ using MonoTorrent.BEncoding;
 
 namespace MonoTorrent.Tracker.Listeners
 {
-    public class HttpListener : ListenerBase
+    public sealed class HttpListener : ListenerBase
     {
         #region Fields
 
@@ -159,5 +159,16 @@ namespace MonoTorrent.Tracker.Listeners
         }
 
         #endregion Methods
+
+        protected override void Dispose(bool disposing)
+        {
+            if (listener != null)
+            {
+                ((IDisposable)listener).Dispose();
+                listener = null;
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

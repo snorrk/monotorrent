@@ -34,7 +34,7 @@ using MonoTorrent.Common;
 
 namespace MonoTorrent.Client.Tracker
 {
-    public abstract class Tracker : ITracker
+    public abstract class Tracker : ITracker, IDisposable
     {
         public event EventHandler BeforeAnnounce;
         public event EventHandler<AnnounceResponseEventArgs> AnnounceComplete;
@@ -142,6 +142,16 @@ namespace MonoTorrent.Client.Tracker
             EventHandler<ScrapeResponseEventArgs> h = ScrapeComplete;
             if (h != null)
                 h(this, e);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

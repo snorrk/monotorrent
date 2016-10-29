@@ -121,5 +121,19 @@ namespace MonoTorrent.Client
             if (listener != null)
                 listener.Close();
         }
+
+        protected override void Dispose(Boolean disposing)
+        {
+            if (disposing)
+            {
+                if (listener != null)
+                {
+                    ((IDisposable)listener).Dispose();
+                    listener = null;
+                }
+            }
+
+            base.Dispose();
+        }
     }
 }

@@ -411,6 +411,20 @@ namespace MonoTorrent.Client.Tracker
            }
        }
 
-       #endregion
-   }
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                if(tracker != null)
+                {
+                    ((IDisposable)tracker).Dispose();
+                    tracker = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+    }
 }

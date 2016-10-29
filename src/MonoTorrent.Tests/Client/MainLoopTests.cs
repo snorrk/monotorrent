@@ -8,7 +8,7 @@ using System.Threading;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class MainLoopTests
+    public sealed class MainLoopTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -35,8 +35,7 @@ namespace MonoTorrent.Client
 
         [TestFixtureTearDown]
         public void FixtureTeardown()
-        {
-            //loop.Dispose();
+        {            
         }
 
         [SetUp]
@@ -90,6 +89,24 @@ namespace MonoTorrent.Client
             });
             Assert.IsTrue(handle.WaitOne(5000, false), "#1: Executed {0} times", count);
             Assert.AreEqual(3, count, "#2");
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (loop != null)
+                {
+                    this.loop.Dispose();
+                    this.loop = null;
+                }
+            }
         }
     }
 }

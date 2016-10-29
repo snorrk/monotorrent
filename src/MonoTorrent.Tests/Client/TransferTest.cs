@@ -45,7 +45,7 @@ using MonoTorrent.Client.Encryption;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class TransferTest
+    public sealed class TransferTest : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -252,6 +252,24 @@ namespace MonoTorrent.Client
             decryptor.Decrypt(message, 4, count);
 
             return PeerMessage.DecodeMessage(message, 0, message.Length, manager);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (pair != null)
+                {
+                    this.pair.Dispose();
+                    this.pair = null;
+                }
+            }
         }
     }
 }

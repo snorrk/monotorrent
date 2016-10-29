@@ -22,7 +22,7 @@ namespace MonoTorrent.Common
     }
 
     [TestFixture]
-    public class TorrentCreatorTests
+    public sealed class TorrentCreatorTests : IDisposable
     {
         private string Comment = "My Comment";
         private string CreatedBy = "Created By MonoTorrent";
@@ -188,6 +188,24 @@ namespace MonoTorrent.Common
             Assert.AreEqual(2, torrent.AnnounceUrls.Count, "#7");
             Assert.AreEqual(2, torrent.AnnounceUrls[0].Count, "#8");
             Assert.AreEqual(2, torrent.AnnounceUrls[1].Count, "#9");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (writer != null)
+                {
+                    this.writer.Dispose();
+                    this.writer = null;
+                }
+            }
         }
     }
 }

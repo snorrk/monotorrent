@@ -213,7 +213,7 @@ namespace SampleClient
             socketListener.Stop();
         }
     }
-    public class EngineTestRig
+    public sealed class EngineTestRig : IDisposable
     {
         private BEncodedDictionary torrentDict;
         private ClientEngine engine;
@@ -308,9 +308,26 @@ namespace SampleClient
             return dict;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (engine != null)
+                {
+                    this.engine.Dispose();
+                    this.engine = null;
+                }
+            }
+        }
     }
 
-    class TestManualConnection
+    sealed class TestManualConnection : IDisposable
     {
         EngineTestRig rig1;
         EngineTestRig rig2;
@@ -332,6 +349,30 @@ namespace SampleClient
                 Console.WriteLine("Connection 1A active: {0}", p.Incoming.Connected);
                 Console.WriteLine("Connection 2A active: {0}", p.Outgoing.Connected);
                 System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (rig1 != null)
+                {
+                    this.rig1.Dispose();
+                    this.rig1 = null;
+                }
+
+                if (rig2 != null)
+                {
+                    this.rig2.Dispose();
+                    this.rig2 = null;
+                }
             }
         }
     }

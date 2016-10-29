@@ -33,7 +33,7 @@ using System.Threading;
 
 namespace MonoTorrent.Common
 {
-    public class AsyncResult : IAsyncResult
+    public class AsyncResult : IAsyncResult, IDisposable
     {
         #region Member Variables
 
@@ -125,5 +125,20 @@ namespace MonoTorrent.Common
         }
 
         #endregion Methods
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(waitHandle != null)
+            {
+                ((IDisposable)waitHandle).Dispose();
+                waitHandle = null;
+            }
+        }
     }
 }

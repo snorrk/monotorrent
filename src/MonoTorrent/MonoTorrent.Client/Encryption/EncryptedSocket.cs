@@ -66,7 +66,7 @@ namespace MonoTorrent.Client.Encryption
     /// <summary>
     /// The class that handles.Message Stream Encryption for a connection
     /// </summary>
-    class EncryptedSocket : IEncryptor
+    class EncryptedSocket : IEncryptor, IDisposable
     {
         protected AsyncResult asyncResult;
         public IEncryption Encryptor
@@ -669,6 +669,21 @@ namespace MonoTorrent.Client.Encryption
             Message.Write(newBuffer, InitialPayload.Length, buffer, offset, count);
 
             InitialPayload = buffer;
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (asyncResult != null)
+            {
+                asyncResult.Dispose();
+                asyncResult = null;
+            }
         }
     }
 }

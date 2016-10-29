@@ -12,7 +12,7 @@ using MonoTorrent.Dht.Tasks;
 namespace MonoTorrent.Dht
 {
     [TestFixture]
-    public class MessageHandlingTests
+    public sealed class MessageHandlingTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -107,15 +107,39 @@ namespace MonoTorrent.Dht
             Assert.AreEqual(lastSeen, node.LastSeen, "#3");
         }
 
-//        void FakePingResponse(object sender, SendQueryEventArgs e)
-//        {
-//            if (!e.TimedOut || !(e.Query is Ping))
-//                return;
-//
-//            SendQueryTask task = (SendQueryTask)e.Task;
-//            PingResponse response = new PingResponse(task.Target.Id);
-//            listener.RaiseMessageReceived(response, task.Target.EndPoint);
-//        }
+        //        void FakePingResponse(object sender, SendQueryEventArgs e)
+        //        {
+        //            if (!e.TimedOut || !(e.Query is Ping))
+        //                return;
+        //
+        //            SendQueryTask task = (SendQueryTask)e.Task;
+        //            PingResponse response = new PingResponse(task.Target.Id);
+        //            listener.RaiseMessageReceived(response, task.Target.EndPoint);
+        //        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (listener != null)
+                {
+                    this.listener.Dispose();
+                    this.listener = null;
+                }
+
+                if (engine != null)
+                {
+                    this.engine.Dispose();
+                    this.engine = null;
+                }
+            }
+        }
     }
 }
 #endif

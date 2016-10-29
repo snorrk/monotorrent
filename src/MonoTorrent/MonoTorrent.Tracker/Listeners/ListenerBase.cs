@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace MonoTorrent.Tracker.Listeners
 {
-    public abstract class ListenerBase
+    public abstract class ListenerBase : IDisposable
     {
         #region Events
 
@@ -109,5 +109,14 @@ namespace MonoTorrent.Tracker.Listeners
 
         #endregion Methods
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
     }
 }

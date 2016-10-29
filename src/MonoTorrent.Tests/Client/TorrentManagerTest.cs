@@ -13,7 +13,7 @@ namespace MonoTorrent.Client
 {
 
     [TestFixture]
-    public class TorrentManagerTest
+    public sealed class TorrentManagerTest : IDisposable
     {
         TestRig rig;
         ConnectionPair conn;
@@ -254,6 +254,24 @@ namespace MonoTorrent.Client
             Assert.IsTrue(rig.Manager.Bitfield.AllFalse, "#2");
             foreach (TorrentFile file in rig.Manager.Torrent.Files)
                 Assert.IsTrue (file.BitField.AllFalse, "#3." + file.Path);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (conn != null)
+                {
+                    this.conn.Dispose();
+                    this.conn = null;
+                }
+            }
         }
     }
 }

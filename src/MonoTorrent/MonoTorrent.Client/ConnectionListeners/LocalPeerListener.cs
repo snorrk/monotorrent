@@ -141,5 +141,19 @@ namespace MonoTorrent.Client
                 }
             }
         }
+        
+        protected override void Dispose(Boolean disposing)
+        {
+            if(disposing)
+            {
+                if(udpClient != null)
+                {
+                    ((IDisposable)udpClient).Dispose();
+                    udpClient = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

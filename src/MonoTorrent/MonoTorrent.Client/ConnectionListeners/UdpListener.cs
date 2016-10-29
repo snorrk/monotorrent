@@ -136,6 +136,20 @@ namespace MonoTorrent
                 // FIXME: Not needed
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (client != null)
+                {
+                    ((IDisposable)client).Dispose();
+                    client = null;
+                }
+            }
+
+            base.Dispose();
+        }
     }
 }
 #endif

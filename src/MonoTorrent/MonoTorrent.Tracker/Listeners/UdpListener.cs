@@ -281,5 +281,16 @@ namespace MonoTorrent.Tracker.Listeners
         {
             throw new ProtocolException(String.Format("ErrorMessage from :{0}",endpoint.Address));
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (listener != null)
+            {
+                ((IDisposable)listener).Dispose();
+                listener = null;
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

@@ -6,7 +6,7 @@ using MonoTorrent.Common;
 
 namespace MonoTorrent
 {
-    public abstract class EditableTorrent
+    public abstract class EditableTorrent : IDisposable
     {
         static readonly BEncodedString AnnounceKey = "announce";
         static readonly BEncodedString AnnounceListKey = "announce-list";
@@ -224,6 +224,16 @@ namespace MonoTorrent
             if (dictionary == InfoDict)
                 CheckCanEditSecure ();
             dictionary [key] = new BEncodedString (value);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

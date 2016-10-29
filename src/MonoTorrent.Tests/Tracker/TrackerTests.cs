@@ -10,7 +10,7 @@ using MonoTorrent.Common;
 namespace MonoTorrent.Tracker
 {
     [TestFixture]
-    public class TrackerTests
+    public sealed class TrackerTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -71,6 +71,24 @@ namespace MonoTorrent.Tracker
             }
 
             Assert.IsTrue(handle.WaitOne(5000, true), "Some of the responses weren't received");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (server != null)
+                {
+                    this.server.Dispose();
+                    this.server = null;
+                }
+            }
         }
     }
 }

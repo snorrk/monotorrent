@@ -42,7 +42,7 @@ using System.Net;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class UdpTrackerTests
+    public sealed class UdpTrackerTests : IDisposable
     {
         static void Main(string[] args)
         {
@@ -368,6 +368,24 @@ namespace MonoTorrent.Client
         void Wait(WaitHandle handle)
         {
             Assert.IsTrue(handle.WaitOne(1000000, true), "Wait handle failed to trigger");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (server != null)
+                {
+                    this.server.Dispose();
+                    this.server = null;
+                }
+            }
         }
     }
 

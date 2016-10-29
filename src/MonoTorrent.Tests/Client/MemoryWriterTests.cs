@@ -10,7 +10,7 @@ using System.IO;
 
 namespace MonoTorrent.Client
 {
-	public class MemoryWriterTests
+	public sealed class MemoryWriterTests : IDisposable
 	{
         byte[] buffer;
         MemoryWriter level1;
@@ -121,5 +121,29 @@ namespace MonoTorrent.Client
             for (int i = startOffset; i < startOffset + count; i++)
                 Assert.AreEqual(buffer[i], expected, "#" + i);
         }
-	}
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (level1 != null)
+                {
+                    this.level1.Dispose();
+                    this.level1 = null;
+                }
+
+                if (level2 != null)
+                {
+                    this.level2.Dispose();
+                    this.level2 = null;
+                }
+            }
+        }
+    }
 }

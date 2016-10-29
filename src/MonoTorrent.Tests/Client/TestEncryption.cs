@@ -10,7 +10,7 @@ using MonoTorrent.Client.Encryption;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class TestEncryption
+    public sealed class TestEncryption : IDisposable
     {
         //public static void Main(string[] args)
         //{
@@ -302,6 +302,24 @@ namespace MonoTorrent.Client
             {
                 Assert.IsTrue(a.Encryptor is PlainTextEncryption);
                 Assert.IsTrue(b.Encryptor is PlainTextEncryption);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (conn != null)
+                {
+                    this.conn.Dispose();
+                    this.conn = null;
+                }
             }
         }
     }

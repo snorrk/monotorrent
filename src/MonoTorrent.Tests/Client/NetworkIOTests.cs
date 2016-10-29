@@ -37,7 +37,7 @@ using MonoTorrent.Client.Encryption;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class NetworkIOTests
+    public sealed class NetworkIOTests : IDisposable
     {
         byte[] buffer;
         byte[] data;
@@ -235,6 +235,24 @@ namespace MonoTorrent.Client
             NetworkIO.EnqueueReceive (Outgoing, data, 0, 100, null, null, null, delegate { }, null);
             Assert.IsTrue (handle.WaitOne (TimeSpan.FromSeconds (4)), "#1");
             Assert.IsFalse (connectionOpen, "#2");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (pair != null)
+                {
+                    this.pair.Dispose();
+                    this.pair = null;
+                }
+            }
         }
     }
 }

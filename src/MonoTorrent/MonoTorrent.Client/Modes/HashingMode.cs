@@ -104,5 +104,19 @@ namespace MonoTorrent.Client
 			}
 			// Do nothing in hashing mode
 		}
-	}
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (hashingWaitHandle != null)
+                {
+                    ((IDisposable)hashingWaitHandle).Dispose();
+                    hashingWaitHandle = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+    }
 }

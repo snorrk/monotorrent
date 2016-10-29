@@ -91,7 +91,7 @@ namespace SampleTracker
         }
     }
 
-    class MySimpleTracker
+    sealed class MySimpleTracker : IDisposable
     {
         Tracker tracker;
         TorrentFolderWatcher watcher;
@@ -221,6 +221,24 @@ namespace SampleTracker
             {
             }
             return ret;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (tracker != null)
+                {
+                    this.tracker.Dispose();
+                    this.tracker = null;
+                }
+            }
         }
     }
 }

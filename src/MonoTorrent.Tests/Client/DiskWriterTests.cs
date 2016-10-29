@@ -83,7 +83,7 @@ namespace MonoTorrent.Client
     }
 
     [TestFixture]
-    public class DiskWriterTests
+    public sealed class DiskWriterTests : IDisposable
     {
         byte [] data = new byte [Piece.BlockSize];
         DiskManager diskManager;
@@ -179,6 +179,24 @@ namespace MonoTorrent.Client
         void CheckFail()
         {
             Assert.IsTrue(handle.WaitOne(5000, true), "Failure was not handled");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (writer != null)
+                {
+                    this.writer.Dispose();
+                    this.writer = null;
+                }
+            }
         }
     }
 }

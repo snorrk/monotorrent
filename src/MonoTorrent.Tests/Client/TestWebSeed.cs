@@ -14,7 +14,7 @@ using MonoTorrent.Common;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class TestWebSeed
+    public sealed class TestWebSeed : IDisposable
     {
         Regex rangeMatcher = new Regex(@"(\d{1,10})-(\d{1,10})");
         //static void Main(string[] args)
@@ -299,6 +299,24 @@ namespace MonoTorrent.Client
         void Wait(WaitHandle handle)
         {
             Assert.IsTrue(handle.WaitOne(5000, true), "WaitHandle did not trigger");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (listener != null)
+                {
+                    ((IDisposable)listener).Dispose();
+                    listener = null;
+                }
+            }
         }
     }
 }

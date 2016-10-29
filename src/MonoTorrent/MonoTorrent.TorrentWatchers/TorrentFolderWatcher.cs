@@ -32,7 +32,7 @@ using System.IO;
 
 namespace MonoTorrent.TorrentWatcher
 {
-    public class TorrentFolderWatcher : ITorrentWatcher
+    public class TorrentFolderWatcher : ITorrentWatcher, IDisposable
     {
         #region Events
 
@@ -133,5 +133,23 @@ namespace MonoTorrent.TorrentWatcher
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                if(this.watcher != null)
+                {
+                    this.watcher.Dispose();
+                    this.watcher = null;
+                }
+            }
+        }
     }
 }

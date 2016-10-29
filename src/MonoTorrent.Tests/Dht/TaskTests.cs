@@ -12,7 +12,7 @@ using System.Threading;
 namespace MonoTorrent.Dht
 {
     [TestFixture]
-    public class TaskTests
+    public sealed class TaskTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -200,6 +200,30 @@ namespace MonoTorrent.Dht
             Assert.IsTrue(handle.WaitOne(1000, true), "#a");
             Assert.IsFalse(engine.RoutingTable.Buckets[0].Nodes.Contains(nodeToReplace), "#1");
             Assert.IsTrue(engine.RoutingTable.Buckets[0].Nodes.Contains(replacement), "#2");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (listener != null)
+                {
+                    this.listener.Dispose();
+                    this.listener = null;
+                }
+
+                if (engine != null)
+                {
+                    this.engine.Dispose();
+                    this.engine = null;
+                }
+            }
         }
     }
 }

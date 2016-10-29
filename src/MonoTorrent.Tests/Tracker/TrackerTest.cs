@@ -10,7 +10,7 @@ using System.Net;
 namespace MonoTorrent.Tracker
 {
     [TestFixture]
-    public class TrackerTest
+    public sealed class TrackerTest : IDisposable
     {
         public TrackerTest()
         {
@@ -171,6 +171,24 @@ namespace MonoTorrent.Tracker
         private InfoHash Clone(InfoHash p)
         {
             return new InfoHash((byte[])p.Hash.Clone());
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (rig != null)
+                {
+                    this.rig.Dispose();
+                    this.rig = null;
+                }
+            }
         }
     }
 }

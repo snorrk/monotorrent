@@ -41,9 +41,9 @@ namespace MonoTorrent.Client
     public delegate void MainLoopTask();
     public delegate bool TimeoutTask();
 
-    public class MainLoop
+    public class MainLoop : IDisposable
     {
-        private class DelegateTask : ICacheable
+        private sealed class DelegateTask : ICacheable, IDisposable
         {
             private ManualResetEvent handle;
             private bool isBlocking;
@@ -140,6 +140,24 @@ namespace MonoTorrent.Client
                 task = null;
                 timeout = null;
                 timeoutResult = false;
+            }
+
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    if (handle != null)
+                    {
+                        ((IDisposable)handle).Dispose();
+                        handle = null;
+                    }
+                }
             }
         }
 
@@ -266,6 +284,24 @@ namespace MonoTorrent.Client
                     callback(result);
                 });
             };
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (dispatcher != null)
+                {
+                    dispatcher.Dispose();
+                    dispatcher = null;
+                }
+            }
         }
     }
 }

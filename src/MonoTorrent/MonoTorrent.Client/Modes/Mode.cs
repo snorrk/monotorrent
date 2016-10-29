@@ -40,7 +40,7 @@ using MonoTorrent.BEncoding;
 
 namespace MonoTorrent.Client
 {
-    abstract class Mode
+    abstract class Mode : IDisposable
     {
         int webseedCount;
         private TorrentManager manager;
@@ -640,6 +640,24 @@ namespace MonoTorrent.Client
                 manager.Peers.ConnectedPeers[i].Enqueue(bundle);
             }
             manager.finishedPieces.Clear();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (manager != null)
+                {
+                    manager.Dispose();
+                    manager = null;
+                }
+            }
         }
     }
 }

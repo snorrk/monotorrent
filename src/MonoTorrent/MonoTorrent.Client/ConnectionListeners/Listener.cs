@@ -35,7 +35,7 @@ using MonoTorrent.Common;
 
 namespace MonoTorrent.Client
 {
-    public abstract class Listener : IListener
+    public abstract class Listener : IListener, IDisposable
     {
         public event EventHandler<EventArgs> StatusChanged;
 
@@ -79,5 +79,15 @@ namespace MonoTorrent.Client
         public abstract void Start();
 
         public abstract void Stop();
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(Boolean disposing)
+        {
+        }
     }
 }

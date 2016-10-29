@@ -9,7 +9,7 @@ using System.Net.Sockets;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class ConnectionListenerTests
+    public sealed class ConnectionListenerTests : IDisposable
     {
         //static void Main(string[] args)
         //{
@@ -60,6 +60,24 @@ namespace MonoTorrent.Client
             endpoint.Port++;
             listener.ChangeEndpoint(endpoint);
             AcceptThree();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (listener != null)
+                {
+                    this.listener.Dispose();
+                    this.listener = null;
+                }
+            }
         }
     }
 }

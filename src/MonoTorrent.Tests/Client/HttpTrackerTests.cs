@@ -9,7 +9,7 @@ using System.Threading;
 namespace MonoTorrent.Client
 {
     [TestFixture]
-    public class HttpTrackerTests
+    public sealed class HttpTrackerTests : IDisposable
     {
         //static void Main()
         //{
@@ -137,6 +137,24 @@ namespace MonoTorrent.Client
         void Wait(WaitHandle handle)
         {
             Assert.IsTrue(handle.WaitOne(1000000, true), "Wait handle failed to trigger");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (server != null)
+                {
+                    this.server.Dispose();
+                    this.server = null;
+                }
+            }
         }
     }
 }

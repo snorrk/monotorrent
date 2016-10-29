@@ -279,6 +279,11 @@ namespace MonoTorrent.Client
 
             if (id.ExtensionSupports.Supports(LTMetadata.Support.Name))
             {
+                if(stream != null)
+                {
+                    stream.Dispose();
+                }
+
                 stream = new MemoryStream(new byte[message.MetadataSize], 0, message.MetadataSize, true, true);
                 int size = message.MetadataSize % LTMetadata.BlockSize;
                 if (size > 0)
@@ -293,6 +298,20 @@ namespace MonoTorrent.Client
         {
             // Never set a peer as interesting when in metadata mode
             // we don't want to try download any data
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                    stream = null;
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
